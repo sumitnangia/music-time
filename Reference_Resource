@@ -1,0 +1,48 @@
+Uploading a mp3/music file via Firebase:
+
+// File or Blob
+ file = Uri.fromFile(new File("path/to/audio.mp3"));
+
+// Create the file metadata
+metadata = new StorageMetadata.Builder()
+        .setContentType("audio/mpeg")
+        .build();
+
+// Upload file and metadata to the path 'audio/audio.mp3'
+uploadTask = storageRef.child("audio/"+file.getLastPathSegment()).putFile(file, metadata);
+
+// Listen for state changes, errors, and completion of the upload.
+uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+    @Override
+    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+        double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+        System.out.println("Upload is " + progress + "% done");
+    }
+}).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+    @Override
+    public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+        System.out.println("Upload is paused");
+    }
+}).addOnFailureListener(new OnFailureListener() {
+    @Override
+    public void onFailure(@NonNull Exception exception) {
+        // Handle unsuccessful uploads
+    }
+}).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+    @Override
+    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+        // Handle successful uploads on complete
+        Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+   }
+});
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+
+------------------------------------------------------------------------------------------------------
+APIs to be used for consuming Music:
+
+https://stackoverflow.com/questions/3988760/is-there-a-free-database-or-web-service-api-for-music-information-albums-artis
+
+https://www.programmableweb.com/news/25-music-apis/2008/02/21
+----------------------------------------------------------------------------------------------------------
