@@ -30,10 +30,10 @@ const App = Vue.extend( {
 //Define route for vue app
 //ref : http://router.vuejs.org/en/
 const router = new VueRouter( {
-	mode: 'history',
+	// mode: 'history',
 	routes: [
 
-		{ path: '/home', name: 'home', component: home }
+		{ path: '/', name: 'home', component: home }
 
 	]
 } );
