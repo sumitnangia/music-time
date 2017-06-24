@@ -1,4 +1,4 @@
-Uploading a mp3/music file via Firebase:
+Uploading a mp3/music file via Firebase [ Code-1]
 
 // File or Blob
  file = Uri.fromFile(new File("path/to/audio.mp3"));
@@ -37,7 +37,51 @@ uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>
 });
 
 ----------------------------------------------------------------------------------------------------------------------------------
+Upload/Download mp3 Code:https://stackoverflow.com/questions/38725542/upload-download-audio-from-firebase
 
+Upload :
+
+$scope.uploadFile = function(){ // uploading file
+var storageRef= firebase.storage().ref();
+var filename= $scope.audio.src.substring($scope.audio.src.lastIndexOf("/")+1,$scope.audio.src.length);
+$scope.fname= filename;
+// fetching file to upload
+baseServ.dirEntry.getFile(filename, {}, function(entry){
+  entry.file(function(gotfile){
+    var reader= new FileReader();
+
+    reader.onloadend= function(resultFile){
+      console.log(resultFile);
+      var blob= new Blob([resultFile], {type:"audio/mp3"});
+      // uploading to firebase server
+      var uploadTask = storageRef.child(filename).put(blob);
+      uploadTask.on('state_changed', function(snapshot){
+        console.log("state_changed:" + filename + "::::Current State:" +snapshot.state);
+      }, function(error) {
+        alert("upload error");
+      }, function() {
+        $scope.downloadURL = uploadTask.snapshot.downloadURL;
+      });
+    }
+    //reading as dataUrl or ArrayBuffer
+    reader.readAsDataURL(gotfile);
+  })
+});
+
+
+Download:
+
+$scope.downloadFile= function(){
+var ft= new FileTransfer();
+ft.download($scope.downloadURL, baseServ.dirDownloads.nativeURL + $scope.fname, function(entry) {
+  // download is successful but unable to play when opening in my device
+    console.log("download complete: " + entry.toURL());
+},
+function(error) {
+    console.log("download error source " + error.source);
+},
+false,
+{});
 
 ------------------------------------------------------------------------------------------------------
 APIs to be used for consuming Music:
